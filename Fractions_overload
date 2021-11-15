@@ -1,0 +1,90 @@
+#include <iostream>
+#include <stdio.h>
+
+int gcd(int a, int b){
+    if (b == 0) return abs(a);
+    return gcd(abs(b), abs(a%b));
+}
+
+struct Fraction{
+    int numerator;
+    int denominator;
+    Fraction(int a = 0, int b =1): numerator(a), denominator(b)
+    {
+       if (a != 0 && b != 0){
+           int t = numerator;
+           numerator = numerator / gcd(numerator, denominator);
+           denominator = denominator / gcd(denominator, t);
+       }
+    }
+
+};
+
+Fraction operator+ (Fraction a, Fraction b){
+    return {a.numerator * b.denominator + b.numerator * a.denominator, a.denominator * b.denominator};
+}
+
+Fraction operator- (Fraction a, Fraction b)
+{
+    return {a.numerator * b.denominator - b.numerator * a.denominator, a.denominator * b.denominator};
+}
+
+Fraction operator* (Fraction a, Fraction b)
+{
+    return {a.numerator * b.numerator, a.denominator * b.denominator};
+}
+
+Fraction operator/ (Fraction a, Fraction b)
+{
+    return {a.numerator * b.denominator, a.denominator * b.numerator};
+}
+
+bool operator == (Fraction a, Fraction b)
+{
+    int t = gcd(a.denominator, b.denominator);
+    if (a.denominator > b.denominator){
+        return (a.denominator / t == b.denominator && a.numerator / t == b.numerator);
+    }
+    else{
+        return (b.denominator / t == a.denominator && b.numerator / t == a.numerator);
+    }
+
+}
+
+bool operator != (Fraction a, Fraction b)
+{
+    return  !(a == b);
+}
+
+bool operator > (Fraction a, Fraction b)
+{
+    return (a.numerator * b.denominator > a.denominator * b.numerator);
+}
+
+bool operator < (Fraction a, Fraction b)
+{
+    return (a.numerator * b.denominator < a.denominator * b.numerator);
+}
+
+bool operator >= (Fraction a, Fraction b)
+{
+    return (a > b || a == b);
+}
+
+bool operator <= (Fraction a, Fraction b)
+{
+    return (b > a || a == b);
+}
+
+int main() {
+    Fraction a = {-1, 2}, b = {3, 4}, sum;
+    sum = a - b;
+    printf("%d / %d     %d \n", sum.numerator, sum.denominator, gcd(sum.numerator, sum.denominator));
+    if (a <= b){
+        printf("a <= b \n");
+    }
+    else {
+        printf("a > b \n");
+    }
+    return 0;
+}
